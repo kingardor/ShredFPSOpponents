@@ -19,7 +19,7 @@ MarkupSafe==1.1.1
 mss==2.0.22
 numpy==1.17.0
 opencv-python==4.1.0.25
-Pillow==6.1.0
+Pillow==6.2.0
 protobuf==3.9.1
 requests==2.22.0
 six==1.12.0
