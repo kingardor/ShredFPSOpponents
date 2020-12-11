@@ -128,7 +128,7 @@ def cpu_nms(boxes, scores, num_classes, max_boxes=50, score_thresh=0.5, iou_thre
         picked_boxes.append(filter_boxes[indices])
         picked_score.append(filter_scores[indices])
         picked_label.append(np.ones(len(indices), dtype='int32')*i)
-        
+
     if len(picked_boxes) == 0: return None, None, None
 
     boxes = np.concatenate(picked_boxes, axis=0)
@@ -245,8 +245,8 @@ def freeze_graph(sess, output_file, output_node_names):
 
 def read_pb_return_tensors(graph, pb_file, return_elements):
 
-    with tf.gfile.FastGFile(pb_file, 'rb') as f:
-        frozen_graph_def = tf.GraphDef()
+    with tf.compat.v2.io.gfile.GFile(pb_file, 'rb') as f:
+        frozen_graph_def = tf.compat.v1.GraphDef()
         frozen_graph_def.ParseFromString(f.read())
 
     with graph.as_default():

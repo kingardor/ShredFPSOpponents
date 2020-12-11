@@ -23,7 +23,7 @@ global detection
 # Handle API Call
 @flaskserver.route(rule='/detect', methods=['POST'])
 def detect():
-    
+
     global detection
     content = request
     batch = np.fromstring(content.data, np.float32).reshape((-1, imgsize, imgsize, 3))
@@ -40,12 +40,12 @@ class Detection():
         self.max_batch_size = batchsize
         self.num_classes = len(utils.read_coco_names('./data/coco.names'))
 
-        self.input_tensor, self.output_tensors = utils.read_pb_return_tensors(tf.get_default_graph(), "./checkpoint/yolov3_cpu_nms.pb",
+        self.input_tensor, self.output_tensors = utils.read_pb_return_tensors(tf.compat.v1.get_default_graph(), "./checkpoint/yolov3_cpu_nms.pb",
                                                 ["Placeholder:0", "concat_9:0", "mul_6:0"])
 
-        self.config = tf.ConfigProto()
-        self.config.gpu_options.per_process_gpu_memory_fraction = 0.4
-        self.sess = tf.Session(config=self.config)
+        self.config = tf.compat.v1.ConfigProto()
+        # self.config.gpu_options.per_process_gpu_memory_fraction = 0.4
+        self.sess = tf.compat.v1.Session(config=self.config)
         _ = self.sess.run(self.output_tensors, feed_dict={self.input_tensor: self.createRandomSample()})
 
     def createRandomSample(self):
@@ -58,7 +58,7 @@ class Detection():
                 continue
             randomSample = np.concatenate((randomSample, np.expand_dims(np.random.random_sample((self.img_size, self.img_size, 3)), axis=0)), axis=0)
         return randomSample
-        
+
     def inference(self, batch):
         ''' Method to perform inference on a batch. '''
 
@@ -77,7 +77,7 @@ class Detection():
         curr_time = time.time()
         exec_time = curr_time - prev_time
         info = "time: %.2f ms" % (1000 * exec_time)
-        
+
         return inferenceList
 
 detection = Detection()
